@@ -1,26 +1,29 @@
 const net = require('net');
+const fs = require('fs');
 
 const server = net.createServer((socket) => {
-  console.log('client connected');
-
-  const start = performance.now();
-  const data = 'x'.repeat(1024 * 1024); // 1 MB of data
-
-  socket.write(data);
+  console.log('Client connected');
 
   socket.on('data', (data) => {
-    const end = performance.now();
-    const duration = end - start; // in milliseconds
-    const speed = data.length / (duration / 1000) / 1024 / 1024; // in Mbps
-    console.log(`received ${data.length} bytes in ${duration.toFixed(2)} ms, speed: ${speed.toFixed(2)} Mbps`);
-    socket.end();
+    const filename = data.toString().trim();
+    console.log(`Client requested file: ${filename}`);
+
+    fs.readFile(filename, (err, fileData) => {
+      if (err) {
+        console.error(err);
+        socket.write('File not found');
+      } else {
+        socket.write(fileData);
+      }
+    });
   });
 
   socket.on('end', () => {
-    console.log('client disconnected');
+    console.log('Client disconnected');
   });
 });
 
-server.listen(8000, () => {
-  console.log('server listening on port 8000');
+const port = 8000;
+server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
