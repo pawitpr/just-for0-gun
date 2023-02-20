@@ -3,18 +3,11 @@ const fs = require('fs');
 
 const server = net.createServer((socket) => {
   console.log('Client connected');
-
+   socket.write("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
   socket.on('data', (data) => {
-    const filename = data.toString().trim();
-    console.log(`Client requested file: ${filename}`);
-
-    fs.readFile(filename, (err, fileData) => {
-      if (err) {
-        console.error(err);
-        socket.write('File not found');
-      } else {
-        socket.write(fileData);
-      }
+   
+     console.log(data.toString());
+      
     });
   });
 
